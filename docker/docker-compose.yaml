@@ -436,6 +436,8 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+    extra_hosts:
+      - "host.dockers.internal:host-gateway"
 
   # worker service
   # The Celery worker for processing the queue.
