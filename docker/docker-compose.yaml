@@ -3,7 +3,7 @@
 # Do not modify this file directly. Instead, update the .env.example
 # or docker-compose-template.yaml and regenerate this file.
 # ==================================================================
-
+name: dify
 x-shared-env: &shared-api-worker-env
   CONSOLE_API_URL: ${CONSOLE_API_URL:-}
   CONSOLE_WEB_URL: ${CONSOLE_WEB_URL:-}
@@ -498,6 +498,9 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - qnap-eldenring
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # worker service
   # The Celery worker for processing the queue.
@@ -525,6 +528,9 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - qnap-eldenring
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # Frontend web application.
   web:
@@ -608,6 +614,7 @@ services:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:8194/health' ]
     networks:
       - ssrf_proxy_network
+      - qnap-eldenring
 
   # plugin daemon
   plugin_daemon:
@@ -654,6 +661,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - default
+      - qnap-eldenring
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # ssrf_proxy server
   # for more information, please refer to
@@ -675,6 +687,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - qnap-eldenring
 
   # Certbot service
   # use `docker-compose --profile certbot up` to start the certbot service.
@@ -1127,6 +1140,8 @@ networks:
   opensearch-net:
     driver: bridge
     internal: true
+  qnap-eldenring:
+    external: true
 
 volumes:
   oradata:
