@@ -8,7 +8,7 @@ import TemplateEn from './template/template.en.mdx'
 import TemplateZh from './template/template.zh.mdx'
 import TemplateJa from './template/template.ja.mdx'
 import I18n from '@/context/i18n'
-import { LanguagesSupported } from '@/i18n/language'
+import { LanguagesSupported } from '@/i18n-config/language'
 import useTheme from '@/hooks/use-theme'
 import { Theme } from '@/types/app'
 import cn from '@/utils/classnames'
@@ -121,7 +121,7 @@ const Doc = ({ apiBaseUrl }: DocProps) => {
             </button>
           )}
       </div>
-      <article className={cn('prose-xl prose mx-1 rounded-t-xl bg-background-default px-4 pt-16 sm:mx-12', theme === Theme.dark && 'dark:prose-invert')}>
+      <article className={cn('prose-xl prose mx-1 rounded-t-xl bg-background-default px-4 pt-16 sm:mx-12', theme === Theme.dark && 'prose-invert')}>
         {Template}
       </article>
     </div>

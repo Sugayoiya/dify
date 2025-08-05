@@ -211,10 +211,6 @@ class DatasetApi(Resource):
         else:
             data["embedding_available"] = True
 
-        if data.get("permission") == "partial_members":
-            part_users_list = DatasetPermissionService.get_dataset_partial_member_list(dataset_id_str)
-            data.update({"partial_member_list": part_users_list})
-
         return data, 200
 
     @setup_required
@@ -416,7 +412,7 @@ class DatasetIndexingEstimateApi(Resource):
             file_ids = args["info_list"]["file_info_list"]["file_ids"]
             file_details = (
                 db.session.query(UploadFile)
-                .filter(UploadFile.tenant_id == current_user.current_tenant_id, UploadFile.id.in_(file_ids))
+                .where(UploadFile.tenant_id == current_user.current_tenant_id, UploadFile.id.in_(file_ids))
                 .all()
             )
 
@@ -521,14 +517,14 @@ class DatasetIndexingStatusApi(Resource):
         dataset_id = str(dataset_id)
         documents = (
             db.session.query(Document)
-            .filter(Document.dataset_id == dataset_id, Document.tenant_id == current_user.current_tenant_id)
+            .where(Document.dataset_id == dataset_id, Document.tenant_id == current_user.current_tenant_id)
             .all()
         )
         documents_status = []
         for document in documents:
             completed_segments = (
                 db.session.query(DocumentSegment)
-                .filter(
+                .where(
                     DocumentSegment.completed_at.isnot(None),
                     DocumentSegment.document_id == str(document.id),
                     DocumentSegment.status != "re_segment",
@@ -537,12 +533,25 @@ class DatasetIndexingStatusApi(Resource):
             )
             total_segments = (
                 db.session.query(DocumentSegment)
-                .filter(DocumentSegment.document_id == str(document.id), DocumentSegment.status != "re_segment")
+                .where(DocumentSegment.document_id == str(document.id), DocumentSegment.status != "re_segment")
                 .count()
             )
-            document.completed_segments = completed_segments
-            document.total_segments = total_segments
-            documents_status.append(marshal(document, document_status_fields))
+            # Create a dictionary with document attributes and additional fields
+            document_dict = {
+                "id": document.id,
+                "indexing_status": document.indexing_status,
+                "processing_started_at": document.processing_started_at,
+                "parsing_completed_at": document.parsing_completed_at,
+                "cleaning_completed_at": document.cleaning_completed_at,
+                "splitting_completed_at": document.splitting_completed_at,
+                "completed_at": document.completed_at,
+                "paused_at": document.paused_at,
+                "error": document.error,
+                "stopped_at": document.stopped_at,
+                "completed_segments": completed_segments,
+                "total_segments": total_segments,
+            }
+            documents_status.append(marshal(document_dict, document_status_fields))
         data = {"data": documents_status}
         return data
 
@@ -559,7 +568,7 @@ class DatasetApiKeyApi(Resource):
     def get(self):
         keys = (
             db.session.query(ApiToken)
-            .filter(ApiToken.type == self.resource_type, ApiToken.tenant_id == current_user.current_tenant_id)
+            .where(ApiToken.type == self.resource_type, ApiToken.tenant_id == current_user.current_tenant_id)
             .all()
         )
         return {"items": keys}
@@ -575,7 +584,7 @@ class DatasetApiKeyApi(Resource):
 
         current_key_count = (
             db.session.query(ApiToken)
-            .filter(ApiToken.type == self.resource_type, ApiToken.tenant_id == current_user.current_tenant_id)
+            .where(ApiToken.type == self.resource_type, ApiToken.tenant_id == current_user.current_tenant_id)
             .count()
         )
 
@@ -611,7 +620,7 @@ class DatasetApiDeleteApi(Resource):
 
         key = (
             db.session.query(ApiToken)
-            .filter(
+            .where(
                 ApiToken.tenant_id == current_user.current_tenant_id,
                 ApiToken.type == self.resource_type,
                 ApiToken.id == api_key_id,
@@ -622,7 +631,7 @@ class DatasetApiDeleteApi(Resource):
         if key is None:
             flask_restful.abort(404, message="API key not found")
 
-        db.session.query(ApiToken).filter(ApiToken.id == api_key_id).delete()
+        db.session.query(ApiToken).where(ApiToken.id == api_key_id).delete()
         db.session.commit()
 
         return {"result": "success"}, 204
@@ -673,6 +682,7 @@ class DatasetRetrievalSettingApi(Resource):
                 | VectorType.TABLESTORE
                 | VectorType.HUAWEI_CLOUD
                 | VectorType.TENCENT
+                | VectorType.MATRIXONE
             ):
                 return {
                     "retrieval_method": [
@@ -720,6 +730,7 @@ class DatasetRetrievalSettingMockApi(Resource):
                 | VectorType.TABLESTORE
                 | VectorType.TENCENT
                 | VectorType.HUAWEI_CLOUD
+                | VectorType.MATRIXONE
             ):
                 return {
                     "retrieval_method": [

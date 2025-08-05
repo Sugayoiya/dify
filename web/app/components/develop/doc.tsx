@@ -16,7 +16,7 @@ import TemplateChatEn from './template/template_chat.en.mdx'
 import TemplateChatZh from './template/template_chat.zh.mdx'
 import TemplateChatJa from './template/template_chat.ja.mdx'
 import I18n from '@/context/i18n'
-import { LanguagesSupported } from '@/i18n/language'
+import { LanguagesSupported } from '@/i18n-config/language'
 import useTheme from '@/hooks/use-theme'
 import { Theme } from '@/types/app'
 import cn from '@/utils/classnames'
@@ -121,7 +121,7 @@ const Doc = ({ appDetail }: IDocProps) => {
             </button>
           )}
       </div>
-      <article className={cn('prose-xl prose', theme === Theme.dark && 'dark:prose-invert')} >
+      <article className={cn('prose-xl prose', theme === Theme.dark && 'prose-invert')} >
         {(appDetail?.mode === 'chat' || appDetail?.mode === 'agent-chat') && (
           (() => {
             switch (locale) {
