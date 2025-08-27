@@ -118,6 +118,8 @@ const translation = {
     addBlock: 'Aggiungi nodo',
     needAnswerNode: 'Deve essere aggiunto il nodo di risposta',
     tagBound: 'Numero di app che utilizzano questo tag',
+    currentWorkflow: 'Flusso di lavoro corrente',
+    currentView: 'Vista corrente',
   },
   env: {
     envPanelTitle: 'Variabili d\'Ambiente',
@@ -301,6 +303,18 @@ const translation = {
     zoomTo50: 'Zoom al 50%',
     zoomTo100: 'Zoom al 100%',
     zoomToFit: 'Zoom per Adattare',
+    alignRight: 'A destra',
+    selectionAlignment: 'Allineamento della selezione',
+    alignBottom: 'In basso',
+    alignTop: 'In alto',
+    vertical: 'Verticale',
+    alignCenter: 'Centro',
+    alignLeft: 'A sinistra',
+    alignMiddle: 'Centro',
+    horizontal: 'Orizzontale',
+    alignNodes: 'Allinea nodi',
+    distributeHorizontal: 'Spazia orizzontalmente',
+    distributeVertical: 'Spazia verticalmente',
   },
   panel: {
     userInputField: 'Campo di Input Utente',
@@ -854,6 +868,7 @@ const translation = {
           upload_file_id: 'Carica l\'ID del file',
         },
         text: 'Contenuto generato dall\'agente',
+        usage: 'Informazioni sull\'utilizzo del modello',
         json: 'JSON generato dall\'agente',
       },
       checkList: {
@@ -1003,6 +1018,11 @@ const translation = {
       dependenciesDescription: 'Nodi su cui si basa questo nodo',
     },
     relationsTab: 'Relazioni',
+    copyLastRun: 'Copia ultimo eseguito',
+    noMatchingInputsFound: 'Nessun input corrispondente trovato dall\'ultimo funzionamento.',
+    copyLastRunError: 'Impossibile copiare gli input dell\'ultima esecuzione',
+    noLastRunFound: 'Nessuna esecuzione precedente trovata',
+    lastOutput: 'Ultimo output',
   },
 }
 
